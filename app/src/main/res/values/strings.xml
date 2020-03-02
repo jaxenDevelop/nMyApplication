@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">我爱农</string>
+
+    <string name="password">&#xe64b;</string>
+    <string name="user">&#xe64a;</string>
+    <string name="eye_open">&#xeb46;</string>
+    <string name="eye_close">&#xe61d;</string>
+    <string name="register">注册</string>
+    <string name="back">&#xe682;</string>
+    <string name="edit_user">用 \u0020户 \u0020名：</string>
+    <string name="edit_pass">密\u3000\u3000码：</string>
+    <string name="edit_repass">重复密码：</string>
+    <string name="btn_register">注册</string>
+</resources>
