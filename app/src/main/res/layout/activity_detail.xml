@@ -1,140 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.home.DetailActivity">
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/add_to_cart">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/detail_img"
+            android:adjustViewBounds="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true" />
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/detail_name"
+            android:layout_below="@+id/detail_img"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/colorText"
+            android:textStyle="bold"
+            android:textSize="22sp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/detail_dishname"
+            android:id="@+id/fav"
+            android:orientation="horizontal"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:orientation="horizontal">
+            android:layout_marginEnd="32dp"
+            android:layout_alignTop="@+id/detail_author"
+            android:layout_alignBottom="@+id/detail_author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
-            <Button
-                android:id="@+id/decline"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginEnd="2dp"
-                android:background="@drawable/ic_remove_circle_outline_black_24dp" />
+            <ImageView
+                android:id="@+id/show_fav"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
             <TextView
-                android:id="@+id/good_num"
-                android:layout_width="24dp"
-                android:layout_height="wrap_content"
+                android:id="@+id/show_fav_text"
+                android:textColor="@color/colorPrimary"
+                android:textSize="17sp"
+                android:layout_marginStart="2dp"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:text="1"
-                android:textColor="@color/colorGrey"
-                android:textSize="16sp" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
-            <Button
-                android:id="@+id/add"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginStart="2dp"
-                android:background="@drawable/ic_add_circle_black_24dp" />
         </LinearLayout>
 
         <TextView
-            android:id="@+id/detail_dishname"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/detail_img"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
+            android:id="@+id/detail_auth"
+            android:text="作者："
             android:textColor="@color/colorText"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:layout_below="@+id/detail_name"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            android:textSize="19sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
         <TextView
-            android:id="@+id/detail_price"
+            android:id="@+id/detail_author"
+            android:text="作者："
+            android:layout_toEndOf="@+id/detail_auth"
+            android:textColor="@color/colorText"
+            android:layout_below="@+id/detail_name"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="2dp"
+            android:textSize="19sp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/detail_dishname"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:textColor="@color/colorTomato"
-            android:textSize="16sp" />
+            android:layout_height="wrap_content"/>
 
         <TextView
             android:id="@+id/detail_introduce"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/detail_price"
+            android:layout_below="@+id/detail_auth"
+            android:textSize="17sp"
+            android:textColor="@color/colorText"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
-            android:textColor="@color/colorText"
-            android:textSize="12sp" />
-
-        <TextView
-            android:id="@+id/detail_comment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/detail_introduce"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:text="商品评价："
-            android:textColor="@color/colorText"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <ScrollView
-            android:id="@+id/scrollView"
+            android:layout_marginBottom="8dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/detail_comment"
-            android:layout_marginBottom="8dp">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:descendantFocusability="blocksDescendants">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/pl_rec"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp" />
-
-            </RelativeLayout>
-
-        </ScrollView>
+            android:layout_height="wrap_content"/>
 
     </RelativeLayout>
 
-
-    <Button
-        android:id="@+id/add_to_cart"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/background_shape"
-        android:gravity="center"
-        android:text="加入购物车"
-        android:textColor="@color/white"
-        android:textSize="16sp" />
-
-</RelativeLayout>
-
-
+</ScrollView>

@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.example.myapplication.home.HomeFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.List;
@@ -52,32 +53,32 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         setContentView(R.layout.activity_main);
 
         Intent intent = getIntent();
-        //i，判断登录账号身份（0：学生， 1：管理员）
+        //i，判断登录账号身份（0：普通用户， 1：管理员）
         int i = intent.getIntExtra("IsManager", 0);
 
         /**保持屏幕常亮**/
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         /**导航栏监听**/
-//        if (i == 0) {
+        if (i == 0) {
             bottomNavigationView = findViewById(R.id.navigation0);
             bottomNavigationView.setVisibility(View.VISIBLE);
-//        } else if (i == 1) {
+        } else if (i == 1) {
 //            bottomNavigationView = findViewById(R.id.navigation1);
 //            bottomNavigationView.setVisibility(View.VISIBLE);
-//        }
+        }
 
         bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         //塞入fragment
         List<Fragment> fragmentList = new Vector<>();
-//        if (i == 0) {
-//            fragmentList.add(new NotificationFragment());
+        if (i == 0) {
+            fragmentList.add(new HomeFragment());
 //            fragmentList.add(new InfoFragment());
 //            fragmentList.add(new MineFragment());
-//        } else if (i == 1) {
+        } else if (i == 1) {
 //            fragmentList.add(new NotificationManageFragment());
 //            fragmentList.add(new InfoManageFragment());
 //            fragmentList.add(new StudentManageFragment());
-//        }
+        }
 
 
         //初始化viewpager

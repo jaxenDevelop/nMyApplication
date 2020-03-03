@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,7 +23,11 @@ import android.widget.Toast;
 
 import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
-import com.example.myapplication.SqlHellper;
+import com.example.myapplication.SqlHelper;
+
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import static android.widget.Toast.makeText;
 
@@ -60,59 +66,186 @@ public class Login extends Activity {
     }
 
     private void initManagerAccount() {
-        SqlHellper myDatabaseHelper = new SqlHellper(getApplicationContext());
+        SqlHelper myDatabaseHelper = new SqlHelper(getApplicationContext());
         SQLiteDatabase db = myDatabaseHelper.getWritableDatabase();
         Cursor cursor = db.query("manager", null, null, null, null, null, null);
-        //初始化管理员账号
+        //初始化管理员账号：判断表中是否有数据，如果没有就进行初始化
         if (cursor.getCount() < 1) {
             ContentValues contentValues = new ContentValues();
             contentValues.put("username", "admin");
             contentValues.put("password", "admin");
             db.insert("manager", null, contentValues);
 
-            //预置课程
-            contentValues.clear();
-            contentValues.put("name", "c++语言程序设计");
-            contentValues.put("day", "1");
-            contentValues.put("number", "2");
-            db.insert("course", null, contentValues);
+
+//            "CREATE TABLE information(id INTEGER PRIMARY KEY AUTOINCREMENT,editor TEXT,title TEXT,time TEXT, img BLOB, read_number TEXT, content TEXT)";
+
+            //定义数组
+            List<String> editor = new ArrayList<>();
+            List<String> title = new ArrayList<>();
+            List<String> time = new ArrayList<>();
+            List<Integer> img = new ArrayList<>();
+            List<Integer> read_number = new ArrayList<>();
+            List<String> content = new ArrayList<>();
+
+            //添加第一条数据
+            editor.add("小二农技");
+            title.add("让人头疼的柑橘黄化，病害？虫害？缺素？");
+            time.add("2020-03-02");
+            img.add(R.drawable.t0);
+            read_number.add(43);
+            content.add("柑橘黄化会引起叶片失绿发黄，大大减低光合作用能力，树势变差，从而引发一系列问题，如抗病能力减弱，吸收水肥的能力变差等，最终导致产量低、果实品质差，直接影响果农收益。目前大多数柑橘黄化并不由单一因素引起，而是多种因素叠加所致。\n" +
+                    "\n" +
+                    "柑橘受到病菌、病毒和类菌质体等病原体的侵入，会产生的各种分泌物，堵塞输导系统，阻断水分和养分吸收，阻碍光合作用必需原料的供应，叶片即出现失绿黄化。\n" +
+                    "\n" +
+                    "今天田小胖给大家梳理了一些由病害引起柑橘黄化的原因，带领果农朋友挖掘黄化表象下的根源，对症下药。\n" +
+                    "\n" +
+                    "柑橘艾滋病·黄龙病\n" +
+                    "\n" +
+                    "号称“柑橘艾滋”的柑橘黄龙病，病原体是细菌，通过嫁接和柑橘木虱转播。症状表现为柑橘整株叶片发黄，果实病变，最终死亡。基于柑橘黄龙病危害性，好多果农朋友一旦发现自家柑橘叶片发黄，就会害怕感染了黄龙病，田小盼为大家整理了几个区分黄龙病黄化的小技巧：\n" +
+                    "\n" +
+                    "斑驳状黄化叶\n" +
+                    "\n" +
+                    "病叶左右不对称；叶基先黄化；斑块交界不明显；病叶脆硬而滑多发生在已经转绿的老熟叶片上，最初从叶脉或叶缘开始退绿黄化，并逐渐向叶肉扩散，形成斑驳黄化，此斑驳黄化细看似一团黄色的烟雾弥散叶片上，其黄化颜色深浅不一，与健康组织无清晰边界。\n" +
+                    "\n" +
+                    "\n" +
+                    " 缺素状黄化\n" +
+                    "\n" +
+                    "类似缺素黄化，这种症状经常出现却难以判断。多发生在新稍叶片刚转绿，并一直保持缺素状黄化，即使补充足够的营养元素也无法逆转。\n" +
+                    "\n" +
+                    "产生原因是病菌堵塞树干韧皮部后，根系难以获得营养，部分根系饥饿而枯死，难以吸收土壤中的营养物质，从而引起新稍缺素状黄化，是病菌间接原因造成的黄化症状，不同于斑驳黄化，是病菌直接堵塞叶脉造成的斑驳黄化。\n" +
+                    "\n" +
+                    "\n" +
+                    "嫩梢插金花\n" +
+                    "\n" +
+                    "秋冬季新梢不转绿，表现均匀黄化的症状，其特点是病树上一束或少数几丛新梢不转色，呈现亮黄色，像一朵黄花俏立枝头，此症状明显，易于普查识别。\n" +
+                    "\n" +
+                    "初发病果园病树零星分布。不同病树症状不对称、不统一。初期只有1-2个枝梢发病，大部分枝叶果正常。同一病树上不同病枝症状不对称、不一样。同一病枝上不同病叶症状不对称、差异大。同一病叶上的不同病斑形状、颜色均不对称。\n" +
+                    "\n" +
+                    "\n" +
+                    "“红鼻子果”或“青果”\n" +
+                    "\n" +
+                    "红鼻果：正常的果实着色是先从中下部再向上转色或均匀着色，而黄龙病果是先在柄处着色，而中下部不再着色。\n" +
+                    "\n" +
+                    "青果：橙柚类感染黄龙病多表现为青果、小果又小又硬，僵果皱缩不能膨大，有些能长成大果，但果实很软，不能着色影响糖酸度，口感酸涩。");
 
 
-            contentValues.clear();
-            contentValues.put("name", "Java编程");
-            contentValues.put("day", "2");
-            contentValues.put("number", "1");
-            db.insert("course", null, contentValues);
-
-            contentValues.clear();
-            contentValues.put("name", "编译原理");
-            contentValues.put("day", "3");
-            contentValues.put("number", "3");
-            db.insert("course", null, contentValues);
-
-            contentValues.clear();
-            contentValues.put("name", "计算机系统");
-            contentValues.put("day", "4");
-            contentValues.put("number", "4");
-            db.insert("course", null, contentValues);
-
-            contentValues.clear();
-            contentValues.put("name", "计算机原理");
-            contentValues.put("day", "5");
-            contentValues.put("number", "2");
-            db.insert("course", null, contentValues);
-
+            //添加第一条数据
+            editor.add("小二农技");
+            title.add("让人头疼的柑橘黄化，病害？虫害？缺素？");
+            time.add("2020-03-02");
+            img.add(R.drawable.t0);
+            read_number.add(43);
+            content.add("柑橘黄化会引起叶片失绿发黄，大大减低光合作用能力，树势变差，从而引发一系列问题，如抗病能力减弱，吸收水肥的能力变差等，最终导致产量低、果实品质差，直接影响果农收益。目前大多数柑橘黄化并不由单一因素引起，而是多种因素叠加所致。\n" +
+                    "柑橘受到病菌、病毒和类菌质体等病原体的侵入，会产生的各种分泌物，堵塞输导系统，阻断水分和养分吸收，阻碍光合作用必需原料的供应，叶片即出现失绿黄化。\n" +
+                    "今天田小胖给大家梳理了一些由病害引起柑橘黄化的原因，带领果农朋友挖掘黄化表象下的根源，对症下药。\n" +
+                    "柑橘艾滋病·黄龙病\n" +
+                    "号称“柑橘艾滋”的柑橘黄龙病，病原体是细菌，通过嫁接和柑橘木虱转播。症状表现为柑橘整株叶片发黄，果实病变，最终死亡。基于柑橘黄龙病危害性，好多果农朋友一旦发现自家柑橘叶片发黄，就会害怕感染了黄龙病，田小盼为大家整理了几个区分黄龙病黄化的小技巧：\n" +
+                    "斑驳状黄化叶\n" +
+                    "病叶左右不对称；叶基先黄化；斑块交界不明显；病叶脆硬而滑多发生在已经转绿的老熟叶片上，最初从叶脉或叶缘开始退绿黄化，并逐渐向叶肉扩散，形成斑驳黄化，此斑驳黄化细看似一团黄色的烟雾弥散叶片上，其黄化颜色深浅不一，与健康组织无清晰边界。\n" +
+                    " 缺素状黄化\n" +
+                    "类似缺素黄化，这种症状经常出现却难以判断。多发生在新稍叶片刚转绿，并一直保持缺素状黄化，即使补充足够的营养元素也无法逆转。\n" +
+                    "产生原因是病菌堵塞树干韧皮部后，根系难以获得营养，部分根系饥饿而枯死，难以吸收土壤中的营养物质，从而引起新稍缺素状黄化，是病菌间接原因造成的黄化症状，不同于斑驳黄化，是病菌直接堵塞叶脉造成的斑驳黄化。\n" +
+                    "嫩梢插金花\n" +
+                    "秋冬季新梢不转绿，表现均匀黄化的症状，其特点是病树上一束或少数几丛新梢不转色，呈现亮黄色，像一朵黄花俏立枝头，此症状明显，易于普查识别。\n" +
+                    "初发病果园病树零星分布。不同病树症状不对称、不统一。初期只有1-2个枝梢发病，大部分枝叶果正常。同一病树上不同病枝症状不对称、不一样。同一病枝上不同病叶症状不对称、差异大。同一病叶上的不同病斑形状、颜色均不对称。\n" +
+                    "“红鼻子果”或“青果”\n" +
+                    "红鼻果：正常的果实着色是先从中下部再向上转色或均匀着色，而黄龙病果是先在柄处着色，而中下部不再着色。\n" +
+                    "青果：橙柚类感染黄龙病多表现为青果、小果又小又硬，僵果皱缩不能膨大，有些能长成大果，但果实很软，不能着色影响糖酸度，口感酸涩");
 
 
-//            contentValues.clear();
-//            contentValues.put("account", "123");
-//            contentValues.put("course", "网络编程");
-//            contentValues.put("grade", "97");
-//            db.insert("score", null, contentValues);
+            //添加第一条数据
+            editor.add("小二农技");
+            title.add("让人头疼的柑橘黄化，病害？虫害？缺素？");
+            time.add("2020-03-02");
+            img.add(R.drawable.t0);
+            read_number.add(43);
+            content.add("柑橘黄化会引起叶片失绿发黄，大大减低光合作用能力，树势变差，从而引发一系列问题，如抗病能力减弱，吸收水肥的能力变差等，最终导致产量低、果实品质差，直接影响果农收益。目前大多数柑橘黄化并不由单一因素引起，而是多种因素叠加所致。\n" +
+                    "柑橘受到病菌、病毒和类菌质体等病原体的侵入，会产生的各种分泌物，堵塞输导系统，阻断水分和养分吸收，阻碍光合作用必需原料的供应，叶片即出现失绿黄化。\n" +
+                    "今天田小胖给大家梳理了一些由病害引起柑橘黄化的原因，带领果农朋友挖掘黄化表象下的根源，对症下药。\n" +
+                    "柑橘艾滋病·黄龙病\n" +
+                    "号称“柑橘艾滋”的柑橘黄龙病，病原体是细菌，通过嫁接和柑橘木虱转播。症状表现为柑橘整株叶片发黄，果实病变，最终死亡。基于柑橘黄龙病危害性，好多果农朋友一旦发现自家柑橘叶片发黄，就会害怕感染了黄龙病，田小盼为大家整理了几个区分黄龙病黄化的小技巧：\n" +
+                    "斑驳状黄化叶\n" +
+                    "病叶左右不对称；叶基先黄化；斑块交界不明显；病叶脆硬而滑多发生在已经转绿的老熟叶片上，最初从叶脉或叶缘开始退绿黄化，并逐渐向叶肉扩散，形成斑驳黄化，此斑驳黄化细看似一团黄色的烟雾弥散叶片上，其黄化颜色深浅不一，与健康组织无清晰边界。\n" +
+                    " 缺素状黄化\n" +
+                    "类似缺素黄化，这种症状经常出现却难以判断。多发生在新稍叶片刚转绿，并一直保持缺素状黄化，即使补充足够的营养元素也无法逆转。\n" +
+                    "产生原因是病菌堵塞树干韧皮部后，根系难以获得营养，部分根系饥饿而枯死，难以吸收土壤中的营养物质，从而引起新稍缺素状黄化，是病菌间接原因造成的黄化症状，不同于斑驳黄化，是病菌直接堵塞叶脉造成的斑驳黄化。\n" +
+                    "嫩梢插金花\n" +
+                    "秋冬季新梢不转绿，表现均匀黄化的症状，其特点是病树上一束或少数几丛新梢不转色，呈现亮黄色，像一朵黄花俏立枝头，此症状明显，易于普查识别。\n" +
+                    "初发病果园病树零星分布。不同病树症状不对称、不统一。初期只有1-2个枝梢发病，大部分枝叶果正常。同一病树上不同病枝症状不对称、不一样。同一病枝上不同病叶症状不对称、差异大。同一病叶上的不同病斑形状、颜色均不对称。\n" +
+                    "“红鼻子果”或“青果”\n" +
+                    "红鼻果：正常的果实着色是先从中下部再向上转色或均匀着色，而黄龙病果是先在柄处着色，而中下部不再着色。\n" +
+                    "青果：橙柚类感染黄龙病多表现为青果、小果又小又硬，僵果皱缩不能膨大，有些能长成大果，但果实很软，不能着色影响糖酸度，口感酸涩");
 
 
+            //添加第一条数据
+            editor.add("小二农技");
+            title.add("让人头疼的柑橘黄化，病害？虫害？缺素？");
+            time.add("2020-03-02");
+            img.add(R.drawable.t0);
+            read_number.add(43);
+            content.add("柑橘黄化会引起叶片失绿发黄，大大减低光合作用能力，树势变差，从而引发一系列问题，如抗病能力减弱，吸收水肥的能力变差等，最终导致产量低、果实品质差，直接影响果农收益。目前大多数柑橘黄化并不由单一因素引起，而是多种因素叠加所致。\n" +
+                    "柑橘受到病菌、病毒和类菌质体等病原体的侵入，会产生的各种分泌物，堵塞输导系统，阻断水分和养分吸收，阻碍光合作用必需原料的供应，叶片即出现失绿黄化。\n" +
+                    "今天田小胖给大家梳理了一些由病害引起柑橘黄化的原因，带领果农朋友挖掘黄化表象下的根源，对症下药。\n" +
+                    "柑橘艾滋病·黄龙病\n" +
+                    "号称“柑橘艾滋”的柑橘黄龙病，病原体是细菌，通过嫁接和柑橘木虱转播。症状表现为柑橘整株叶片发黄，果实病变，最终死亡。基于柑橘黄龙病危害性，好多果农朋友一旦发现自家柑橘叶片发黄，就会害怕感染了黄龙病，田小盼为大家整理了几个区分黄龙病黄化的小技巧：\n" +
+                    "斑驳状黄化叶\n" +
+                    "病叶左右不对称；叶基先黄化；斑块交界不明显；病叶脆硬而滑多发生在已经转绿的老熟叶片上，最初从叶脉或叶缘开始退绿黄化，并逐渐向叶肉扩散，形成斑驳黄化，此斑驳黄化细看似一团黄色的烟雾弥散叶片上，其黄化颜色深浅不一，与健康组织无清晰边界。\n" +
+                    " 缺素状黄化\n" +
+                    "类似缺素黄化，这种症状经常出现却难以判断。多发生在新稍叶片刚转绿，并一直保持缺素状黄化，即使补充足够的营养元素也无法逆转。\n" +
+                    "产生原因是病菌堵塞树干韧皮部后，根系难以获得营养，部分根系饥饿而枯死，难以吸收土壤中的营养物质，从而引起新稍缺素状黄化，是病菌间接原因造成的黄化症状，不同于斑驳黄化，是病菌直接堵塞叶脉造成的斑驳黄化。\n" +
+                    "嫩梢插金花\n" +
+                    "秋冬季新梢不转绿，表现均匀黄化的症状，其特点是病树上一束或少数几丛新梢不转色，呈现亮黄色，像一朵黄花俏立枝头，此症状明显，易于普查识别。\n" +
+                    "初发病果园病树零星分布。不同病树症状不对称、不统一。初期只有1-2个枝梢发病，大部分枝叶果正常。同一病树上不同病枝症状不对称、不一样。同一病枝上不同病叶症状不对称、差异大。同一病叶上的不同病斑形状、颜色均不对称。\n" +
+                    "“红鼻子果”或“青果”\n" +
+                    "红鼻果：正常的果实着色是先从中下部再向上转色或均匀着色，而黄龙病果是先在柄处着色，而中下部不再着色。\n" +
+                    "青果：橙柚类感染黄龙病多表现为青果、小果又小又硬，僵果皱缩不能膨大，有些能长成大果，但果实很软，不能着色影响糖酸度，口感酸涩");
+
+
+            //添加第一条数据
+            editor.add("小二农技");
+            title.add("让人头疼的柑橘黄化，病害？虫害？缺素？");
+            time.add("2020-03-02");
+            img.add(R.drawable.t0);
+            read_number.add(43);
+            content.add("柑橘黄化会引起叶片失绿发黄，大大减低光合作用能力，树势变差，从而引发一系列问题，如抗病能力减弱，吸收水肥的能力变差等，最终导致产量低、果实品质差，直接影响果农收益。目前大多数柑橘黄化并不由单一因素引起，而是多种因素叠加所致。\n" +
+                    "柑橘受到病菌、病毒和类菌质体等病原体的侵入，会产生的各种分泌物，堵塞输导系统，阻断水分和养分吸收，阻碍光合作用必需原料的供应，叶片即出现失绿黄化。\n" +
+                    "今天田小胖给大家梳理了一些由病害引起柑橘黄化的原因，带领果农朋友挖掘黄化表象下的根源，对症下药。\n" +
+                    "柑橘艾滋病·黄龙病\n" +
+                    "号称“柑橘艾滋”的柑橘黄龙病，病原体是细菌，通过嫁接和柑橘木虱转播。症状表现为柑橘整株叶片发黄，果实病变，最终死亡。基于柑橘黄龙病危害性，好多果农朋友一旦发现自家柑橘叶片发黄，就会害怕感染了黄龙病，田小盼为大家整理了几个区分黄龙病黄化的小技巧：\n" +
+                    "斑驳状黄化叶\n" +
+                    "病叶左右不对称；叶基先黄化；斑块交界不明显；病叶脆硬而滑多发生在已经转绿的老熟叶片上，最初从叶脉或叶缘开始退绿黄化，并逐渐向叶肉扩散，形成斑驳黄化，此斑驳黄化细看似一团黄色的烟雾弥散叶片上，其黄化颜色深浅不一，与健康组织无清晰边界。\n" +
+                    " 缺素状黄化\n" +
+                    "类似缺素黄化，这种症状经常出现却难以判断。多发生在新稍叶片刚转绿，并一直保持缺素状黄化，即使补充足够的营养元素也无法逆转。\n" +
+                    "产生原因是病菌堵塞树干韧皮部后，根系难以获得营养，部分根系饥饿而枯死，难以吸收土壤中的营养物质，从而引起新稍缺素状黄化，是病菌间接原因造成的黄化症状，不同于斑驳黄化，是病菌直接堵塞叶脉造成的斑驳黄化。\n" +
+                    "嫩梢插金花\n" +
+                    "秋冬季新梢不转绿，表现均匀黄化的症状，其特点是病树上一束或少数几丛新梢不转色，呈现亮黄色，像一朵黄花俏立枝头，此症状明显，易于普查识别。\n" +
+                    "初发病果园病树零星分布。不同病树症状不对称、不统一。初期只有1-2个枝梢发病，大部分枝叶果正常。同一病树上不同病枝症状不对称、不一样。同一病枝上不同病叶症状不对称、差异大。同一病叶上的不同病斑形状、颜色均不对称。\n" +
+                    "“红鼻子果”或“青果”\n" +
+                    "红鼻果：正常的果实着色是先从中下部再向上转色或均匀着色，而黄龙病果是先在柄处着色，而中下部不再着色。\n" +
+                    "青果：橙柚类感染黄龙病多表现为青果、小果又小又硬，僵果皱缩不能膨大，有些能长成大果，但果实很软，不能着色影响糖酸度，口感酸涩");
+
+
+
+
+            //将数据塞入表
+            for (int i = 0; i < editor.size(); i++)
+            {
+                contentValues.clear();
+                contentValues.put("editor", editor.get(i));
+                contentValues.put("title", title.get(i));
+                contentValues.put("time", time.get(i));
+                Bitmap bitmap1 = BitmapFactory.decodeResource(getResources(), img.get(i));
+                int size = bitmap1.getWidth() * bitmap1.getHeight() * 4;
+                ByteArrayOutputStream baos = new ByteArrayOutputStream(size);
+                bitmap1.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                byte[] imagedata1 = baos.toByteArray();
+
+                contentValues.put("img", imagedata1);
+                contentValues.put("read_number", read_number.get(i));
+                contentValues.put("content", content.get(i));
+                db.insert("information", null, contentValues);
+            }
         }
-
 
         cursor.close();
         db.close();
@@ -124,6 +257,11 @@ public class Login extends Activity {
         TextView icon_pass = findViewById(R.id.icon_pass);
         et_user = findViewById(R.id.et_user);
         et_password = findViewById(R.id.et_password);
+
+        //带删除
+        et_user.setText("123");
+        et_password.setText("123");
+
         btn_login = findViewById(R.id.btn_login);
         manager_login = findViewById(R.id.manager_login);
 
@@ -207,8 +345,8 @@ public class Login extends Activity {
         }
         setLoginBtnClickable(false);
         //判断账号密码
-        SqlHellper sqlHellper = new SqlHellper(this);
-        SQLiteDatabase db = sqlHellper.getWritableDatabase();
+        SqlHelper sqlHelper = new SqlHelper(this);
+        SQLiteDatabase db = sqlHelper.getWritableDatabase();
         String sql = null;
         if (i == 0)
             sql = "select * from userInfo where username = ? and password = ?";

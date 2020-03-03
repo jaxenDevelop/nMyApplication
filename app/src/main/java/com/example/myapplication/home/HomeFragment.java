@@ -1,6 +1,9 @@
 package com.example.myapplication.home;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -10,6 +13,7 @@ import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
@@ -18,10 +22,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.dingcan.R;
-import com.example.dingcan.tools.MenuInfo;
-import com.example.dingcan.ui.db.SqlHellper;
 import com.example.myapplication.R;
+import com.example.myapplication.SqlHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,17 +31,15 @@ import java.util.List;
 import static android.content.Context.MODE_PRIVATE;
 
 
-public class HomeFragment extends Fragment implements View.OnClickListener {
+public class HomeFragment extends Fragment{
 
     private HomeRecycleAdapter homeRecycleAdapter;
     private RecyclerView recyclerView;
-
-    private Handler handler;
-    private RelativeLayout add_people_edit;
-
-    private List<MenuInfo> menuInfos;
-    private String LoginUserName;
-    private SqlHellper sqlHellper;
+    private ImageView add0;
+    private List<NewsInfo> menuInfos;
+    private ReceiveMessage receiveMessage;
+    private IntentFilter intentFilter;
+    private SqlHelper sqlHelper;
 
     @Nullable
     @Override
@@ -47,12 +47,19 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.home, container, false);
 
-        SharedPreferences sp = getActivity().getSharedPreferences("CurrentLogin", MODE_PRIVATE);
-        LoginUserName = sp.getString("username", "none");
-
         menuInfos = new ArrayList<>();
         recyclerView = view.findViewById(R.id.recycleView);
+        add0 = view.findViewById(R.id.add0);
+        add0.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent2 = new Intent(getActivity(), CreateMenuActivity.class);
+                startActivity(intent2);
+            }
+        });
         homeRecycleAdapter = new HomeRecycleAdapter(getActivity(), menuInfos);
+        sqlHelper = new SqlHelper(getActivity());
+        initData();
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -61,84 +68,52 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         /**nestedScroll嵌套recycleView，添加此段代码使滑动带惯性**/
         recyclerView.setNestedScrollingEnabled(false);
 
-        handler = new Handler(new Handler.Callback() {
-            @Override
-            public boolean handleMessage(Message message) {
-                switch (message.what) {
-                    case 0:
-                        homeRecycleAdapter.notifyDataSetChanged();
-                        break;
-                }
-                return false;
-            }
-        });
+        receiveMessage = new ReceiveMessage();
+        intentFilter = new IntentFilter();
+        intentFilter.addAction("PUBLISHINFO");
+        getActivity().registerReceiver(receiveMessage, intentFilter);
 
-        add_people_edit = view.findViewById(R.id.add_people_edit);
-        add_people_edit.setOnClickListener(this);
-
-        sqlHellper = new SqlHellper(getActivity());
-        initData();
         return view;
     }
 
     private void initData() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                menuInfos.clear();
+        menuInfos.clear();
+        SQLiteDatabase sqLiteDatabase = sqlHelper.getReadableDatabase();
+        Cursor cursor = sqLiteDatabase.query("information", null, null, null, null, null, null);
 
-                SQLiteDatabase sqLiteDatabase = sqlHellper.getReadableDatabase();
-                Cursor cursor = sqLiteDatabase.query("menu", null, null, null, null, null, null);
-
-
-                if (cursor.moveToFirst()) {
-                    do {
-                        menuInfos.add(new MenuInfo(
-                                cursor.getString(cursor.getColumnIndex("dishname")),
-                                AboutIntroduction(cursor.getString(cursor.getColumnIndex("introduce"))),
-                                cursor.getBlob(cursor.getColumnIndex("img")),
-                                cursor.getString(cursor.getColumnIndex("identity")),
-                                cursor.getString(cursor.getColumnIndex("distance")),
-                                cursor.getString(cursor.getColumnIndex("price"))
-                        ));
-                    }
-                    while (cursor.moveToNext());
-                }
-
-                cursor.close();
-                sqLiteDatabase.close();
-                Message message = Message.obtain();
-                message.what = 0;
-                handler.sendMessage(message);
-
+        if (cursor.moveToFirst()) {
+            do {
+                menuInfos.add(new NewsInfo(
+                        cursor.getInt(cursor.getColumnIndex("id")),
+                        cursor.getString(cursor.getColumnIndex("editor")),
+                        cursor.getString(cursor.getColumnIndex("title")),
+                        cursor.getString(cursor.getColumnIndex("time")),
+                        cursor.getBlob(cursor.getColumnIndex("img")),
+                        cursor.getString(cursor.getColumnIndex("read_number")),
+                        cursor.getString(cursor.getColumnIndex("content"))
+                ));
             }
-        }).start();
+            while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        sqLiteDatabase.close();
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.add_people_edit:
-                Intent intent = new Intent(getActivity(), SearchActivity.class);
-                startActivity(intent);
-                break;
-        }
-    }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        getActivity().unregisterReceiver(receiveMessage);
     }
 
-
-    public String AboutIntroduction(String str) {
-        if (str.length() > 18) {
-            str = str.substring(0, 18) + "...";
-
+    public class ReceiveMessage extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            initData();
+            homeRecycleAdapter.notifyDataSetChanged();
         }
-        return str;
     }
-
 }
 
 

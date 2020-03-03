@@ -10,19 +10,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.dingcan.R;
-import com.example.dingcan.tools.MenuInfo;
-import com.example.dingcan.ui.db.SqlHellper;
 import com.example.myapplication.R;
+import com.example.myapplication.SqlHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,68 +26,42 @@ import java.util.List;
 public class DetailActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ImageView detail_img;
-    private TextView detail_dishname, detail_price, detail_introduce, good_num;
-    private RecyclerView pl_rec;
-    private Button add_to_cart, add, decline;
+    private TextView detail_name, detail_author, detail_introduce;
+    private RecyclerView mat_rec, gc_rec;
 
     private Handler handler;
-    private String identity;
+    private int id;
 
-    private SqlHellper myDatabaseHelper;
+    private SqlHelper myDatabaseHelper;
 
-
-    private String DishName, Price, Introduce, LoginUserName;
+    private String title, editor, content;
     private byte[] img;
+    private LinearLayout fav;
+    private ImageView show_fav;
+    private TextView show_fav_text;
+    private boolean IsFavourite;
+    private String NoFav = "收藏";
+    private String HasFav = "已收藏";
+    private String LoginUserName;
 
-    private DetailCommentAdapter detailMaterialAdapter;
-
-    private List<String> MaterialNameList, MaterialAmountList, GcStepList, GcIntroduceList;
-    private List<byte[]> GcImgList;
-    private List<MenuInfo> menuInfos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        SharedPreferences sp = getSharedPreferences("CurrentLogin", MODE_PRIVATE);
-        LoginUserName = sp.getString("username", "none");
-
-        add = findViewById(R.id.add);
-        decline = findViewById(R.id.decline);
-        add_to_cart = findViewById(R.id.add_to_cart);
-        add.setOnClickListener(this);
-        decline.setOnClickListener(this);
-        add_to_cart.setOnClickListener(this);
-
-        pl_rec = findViewById(R.id.pl_rec);
-        good_num = findViewById(R.id.good_num);
-        menuInfos = new ArrayList<>();
-        myDatabaseHelper = new SqlHellper(getApplicationContext());
-        MaterialNameList = new ArrayList<>();
-        MaterialAmountList = new ArrayList<>();
-        GcStepList = new ArrayList<>();
-        GcImgList = new ArrayList<>();
-        GcIntroduceList = new ArrayList<>();
-
-        detailMaterialAdapter = new DetailCommentAdapter(getApplicationContext(), menuInfos);
-
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        /**网格布局**/
-        pl_rec.setLayoutManager(linearLayoutManager);
-        pl_rec.setNestedScrollingEnabled(false);
-        pl_rec.setAdapter(detailMaterialAdapter);
-
-
+        fav = findViewById(R.id.fav);
+        fav.setOnClickListener(this);
+        show_fav = findViewById(R.id.show_fav);
+        show_fav_text = findViewById(R.id.show_fav_text);
+        myDatabaseHelper = new SqlHelper(getApplicationContext());
         detail_img = findViewById(R.id.detail_img);
-        detail_dishname = findViewById(R.id.detail_dishname);
-        detail_price = findViewById(R.id.detail_price);
+        detail_name = findViewById(R.id.detail_name);
+        detail_author = findViewById(R.id.detail_author);
         detail_introduce = findViewById(R.id.detail_introduce);
 
-
         Intent intent = getIntent();
-        identity = intent.getStringExtra("flag");
+        id = intent.getIntExtra("flag", 0);
 
         initData();
 
@@ -100,12 +70,23 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             public boolean handleMessage(Message message) {
                 switch (message.what) {
                     case 0:
-                        detail_dishname.setText(DishName);
-                        detail_price.setText("¥" + Price);
-                        detail_introduce.setText(Introduce);
+                        detail_name.setText(title);
+                        detail_author.setText(editor);
+                        detail_introduce.setText(content);
                         detail_img.setImageBitmap(BitmapFactory.decodeByteArray(img, 0, img.length));
 
-                        detailMaterialAdapter.notifyDataSetChanged();
+                        break;
+                    case 1:
+                        show_fav.setBackgroundResource(R.drawable.ic_favorite_border_red_200_24dp);
+                        show_fav_text.setText(NoFav);
+
+//                        collectionAdapter.notifyDataSetChanged();
+                        break;
+                    case 2:
+                        show_fav.setBackgroundResource(R.drawable.ic_favorite_black_24dp);
+                        show_fav_text.setText(HasFav);
+
+//                        collectionAdapter.notifyDataSetChanged();
                         break;
                 }
                 return false;
@@ -115,43 +96,49 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void initData() {
+
         new Thread(new Runnable() {
             @Override
             public void run() {
-                SQLiteDatabase db = myDatabaseHelper.getReadableDatabase();
-                Cursor cursor = db.query("menu", null, "identity = ?", new String[]{identity}, null, null, null);
-                if (cursor.moveToFirst()) {
-                    do {
-                        DishName = cursor.getString(cursor.getColumnIndex("dishname"));
-                        Price = cursor.getString(cursor.getColumnIndex("price"));
-                        Introduce = cursor.getString(cursor.getColumnIndex("introduce"));
-
-                        img = cursor.getBlob(cursor.getColumnIndex("img"));
-
-                    } while (cursor.moveToNext());
-                }
 
 
-                Cursor cursor1 = db.query("discuss", null, "identity = ?", new String[]{identity}, null, null, null);
-                if (cursor1.moveToFirst()) {
-                    do {
-                        menuInfos.add(new MenuInfo(
-                                cursor1.getString(cursor1.getColumnIndex("username")),
-                                cursor1.getString(cursor1.getColumnIndex("time")),
-                                cursor1.getString(cursor1.getColumnIndex("comment"))
-                        ));
+        SQLiteDatabase db = myDatabaseHelper.getReadableDatabase();
+        Cursor cursor = db.query("information", null, "id = ?", new String[]{String.valueOf(id)}, null, null, null);
+        if (cursor.moveToFirst()) {
+            do {
+                editor = cursor.getString(cursor.getColumnIndex("editor"));
+                title = cursor.getString(cursor.getColumnIndex("title"));
+                content = cursor.getString(cursor.getColumnIndex("content"));
+                img = cursor.getBlob(cursor.getColumnIndex("img"));
 
-                    } while (cursor1.moveToNext());
-                }
+            } while (cursor.moveToNext());
+        }
 
+        //判断是否收藏
+        SharedPreferences sp = getSharedPreferences("CurrentLogin", MODE_PRIVATE);
+        LoginUserName = sp.getString("username", "none");
+        Cursor cursor3 = db.query("favourite", null, "information_id = ? and username = ?", new String[]{String.valueOf(id), LoginUserName}, null, null, null);
+        if (cursor3.getCount() == 0) {
+            Message message = Message.obtain();
+            message.what = 1;
+            handler.sendMessage(message);
 
-                cursor1.close();
-                cursor.close();
-                db.close();
+            IsFavourite = false;
+        } else {
+            Message message = Message.obtain();
+            message.what = 2;
+            handler.sendMessage(message);
 
-                Message message = Message.obtain();
-                message.what = 0;
-                handler.sendMessage(message);
+            IsFavourite = true;
+        }
+
+        cursor3.close();
+        cursor.close();
+        db.close();
+
+        Message message = Message.obtain();
+        message.what = 0;
+        handler.sendMessage(message);
             }
         }).start();
     }
@@ -159,43 +146,43 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.decline:
-                Integer numberTemp = Integer.parseInt(good_num.getText().toString());
-                numberTemp--;
-                if (numberTemp < 1) {
-                    numberTemp = 1;
-                }
-                good_num.setText(String.valueOf(numberTemp));
-                break;
+            case R.id.fav:
+                if (!IsFavourite) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            SqlHelper myDatabaseHelper = new SqlHelper(getApplicationContext());
+                            SQLiteDatabase sqLiteDatabase = myDatabaseHelper.getWritableDatabase();
+                            ContentValues contentValues = new ContentValues();
+                            contentValues.put("information_id", id);
+                            contentValues.put("username", LoginUserName);
+                            sqLiteDatabase.insert("favourite", null, contentValues);
+                            sqLiteDatabase.close();
 
-            case R.id.add:
+                            IsFavourite = true;
+                            sqLiteDatabase.close();
+                            Message message = Message.obtain();
+                            message.what = 2;
+                            handler.sendMessage(message);
+                        }
+                    }).start();
+                } else {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            SqlHelper myDatabaseHelper = new SqlHelper(getApplicationContext());
+                            SQLiteDatabase sqLiteDatabase = myDatabaseHelper.getWritableDatabase();
+                            sqLiteDatabase.delete("favourite", "information_id = ? and username = ?", new String[]{String.valueOf(id), LoginUserName});
+                            sqLiteDatabase.close();
 
-                Integer numberTemp1 = Integer.parseInt(good_num.getText().toString());
-                numberTemp1++;
-                good_num.setText(String.valueOf(numberTemp1));
+                            IsFavourite = false;
+                            sqLiteDatabase.close();
+                            Message message = Message.obtain();
+                            message.what = 1;
+                            handler.sendMessage(message);
+                        }
+                    }).start();
 
-                break;
-
-            case R.id.add_to_cart:
-                SQLiteDatabase db = myDatabaseHelper.getWritableDatabase();
-                ContentValues values = new ContentValues();
-                values.put("identity", identity);
-                values.put("img", img);
-                values.put("dishname", DishName);
-                values.put("username", LoginUserName);
-                values.put("price", Price);
-                values.put("nums", good_num.getText().toString());
-                values.put("active", "0");
-
-                long id = db.insert("orderform", null, values);
-                if (id != 0) {
-                    Toast.makeText(DetailActivity.this, "添加购物车成功，可在购物车中查看", Toast.LENGTH_SHORT).show();
-                    good_num.setText("1");
-                    Intent intent = new Intent();
-                    intent.setAction("REFRESHDATA");
-                    sendBroadcast(intent);
-
-                    finish();
                 }
                 break;
         }

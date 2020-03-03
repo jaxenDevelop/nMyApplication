@@ -17,7 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.myapplication.R;
-import com.example.myapplication.SqlHellper;
+import com.example.myapplication.SqlHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -33,7 +33,7 @@ public class Register extends Activity {
     private boolean register_password_show = false;
     private boolean register_repassword_show = false;
     private Button register_btn;
-    private SqlHellper sqlHellper;
+    private SqlHelper sqlHelper;
     private ImageView back_arrow;
 
     @Override
@@ -69,7 +69,7 @@ public class Register extends Activity {
         register_show.setText(getResources().getString(R.string.eye_close));
         register_show2.setText(getResources().getString(R.string.eye_close));
 
-        sqlHellper = new SqlHellper(this);
+        sqlHelper = new SqlHelper(this);
     }
 
     public String getUsername() {
@@ -147,7 +147,7 @@ public class Register extends Activity {
             showToast("两次密码不一致");
             return;
         }
-        SQLiteDatabase db = sqlHellper.getWritableDatabase();
+        SQLiteDatabase db = sqlHelper.getWritableDatabase();
         Cursor cursor = db.query("userInfo", new String[]{"username", "password"}, "username=?", new String[]{getUsername()}, null, null, null);
         has_register = cursor.moveToNext();
         if (has_register) {

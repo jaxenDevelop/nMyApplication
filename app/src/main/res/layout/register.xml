@@ -7,27 +7,30 @@
     android:orientation="vertical">
 
     <RelativeLayout
+        android:background="@color/colorPrimary"
         android:layout_width="match_parent"
         android:layout_height="48dp">
 
         <ImageView
             android:id="@+id/back_arrow"
-            android:src="@drawable/ic_arrow_back_black_24dp"
+            android:src="@drawable/rt"
             android:layout_centerVertical="true"
-            android:layout_width="wrap_content"
+            android:layout_width="24dp"
             android:layout_marginStart="16dp"
-            android:layout_height="wrap_content"/>
+            android:layout_height="24dp"/>
 
         <TextView
-            android:text="注册"
-            android:textColor="@color/colorText"
-            android:textSize="20sp"
-            android:layout_centerInParent="true"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:src="@mipmap/ic_launcher"
+            android:text="账号注册"
+            android:textSize="19sp"
+            android:textColor="#ffffff" />
 
     </RelativeLayout>
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/login_rela_height"

@@ -24,6 +24,10 @@
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".user.Register"
             android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".home.DetailActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".home.CreateMenuActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>
