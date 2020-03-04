@@ -225,11 +225,8 @@ public class Login extends Activity {
                     "青果：橙柚类感染黄龙病多表现为青果、小果又小又硬，僵果皱缩不能膨大，有些能长成大果，但果实很软，不能着色影响糖酸度，口感酸涩");
 
 
-
-
             //将数据塞入表
-            for (int i = 0; i < editor.size(); i++)
-            {
+            for (int i = 0; i < editor.size(); i++) {
                 contentValues.clear();
                 contentValues.put("editor", editor.get(i));
                 contentValues.put("title", title.get(i));
@@ -245,6 +242,44 @@ public class Login extends Activity {
                 contentValues.put("content", content.get(i));
                 db.insert("information", null, contentValues);
             }
+
+
+            /**以下是帖子初始化**/
+            contentValues.clear();
+            contentValues.put("username", "王翠超");
+            contentValues.put("time", "2020-01-23 17:55");
+            contentValues.put("content", "药害用什么药？");
+            contentValues.put("discuss_number", 20);
+            db.insert("comment", null, contentValues);
+
+            contentValues.clear();
+            contentValues.put("username", "王翠超");
+            contentValues.put("time", "2020-01-25 10:35");
+            contentValues.put("content", "红苗怎么回事");
+            contentValues.put("discuss_number", 36);
+            db.insert("comment", null, contentValues);
+
+            /**以下是评论初始化**/
+            String sql4 = "CREATE TABLE discuss(id INTEGER PRIMARY KEY AUTOINCREMENT,circle_id Integer,username TEXT, reply_people_name TEXT,time TEXT, content TEXT)";
+
+
+            contentValues.clear();
+            contentValues.put("circle_id", 1);
+            contentValues.put("username", "张三丰");
+            contentValues.put("reply_people_name", "王翠超");
+            contentValues.put("time", "2020-01-23 18:55");
+            contentValues.put("content", "到水稻病虫害资料库查看，如果不满意可以在问题下回复追问");
+            db.insert("discuss", null, contentValues);
+
+            contentValues.clear();
+            contentValues.put("circle_id", 1);
+            contentValues.put("username", "雷潘");
+            contentValues.put("reply_people_name", "张三丰");
+            contentValues.put("time", "2020-01-23 20:35");
+            contentValues.put("content", "谢谢，我去查下资料");
+            db.insert("discuss", null, contentValues);
+
+
         }
 
         cursor.close();

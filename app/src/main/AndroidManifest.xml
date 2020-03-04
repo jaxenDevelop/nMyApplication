@@ -11,7 +11,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".user.Login"
+        <activity
+            android:name=".circle.ShowDiscussAcitvity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".user.Login"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -19,15 +23,27 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".user.Register"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".home.DetailActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".home.CreateMenuActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".user.Register"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".home.DetailActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".home.CreateMenuActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".circle.WriteAnswerActivity"
+            android:theme="@style/DialogActivityTheme" />
+        <activity
+            android:name=".circle.WriteCircleActivity"
+            android:theme="@style/DialogActivityTheme" />
+        <activity
+            android:name=".mine.ApplicationSpecialistActivity"
+            android:theme="@style/DialogActivityTheme" />
     </application>
 
 </manifest>

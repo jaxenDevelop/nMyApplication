@@ -1,10 +1,5 @@
 package com.example.myapplication;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
-
 import android.Manifest;
 import android.content.Intent;
 import android.os.Build;
@@ -14,7 +9,14 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
+
+import com.example.myapplication.circle.CircleFragment;
 import com.example.myapplication.home.HomeFragment;
+import com.example.myapplication.mine.MineFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.List;
@@ -22,7 +24,7 @@ import java.util.Vector;
 
 import pub.devrel.easypermissions.EasyPermissions;
 
-public class MainActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks{
+public class MainActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
 
     private BottomNavigationView bottomNavigationView;
     private ViewPager viewPager;
@@ -72,8 +74,8 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         List<Fragment> fragmentList = new Vector<>();
         if (i == 0) {
             fragmentList.add(new HomeFragment());
-//            fragmentList.add(new InfoFragment());
-//            fragmentList.add(new MineFragment());
+            fragmentList.add(new CircleFragment());
+            fragmentList.add(new MineFragment());
         } else if (i == 1) {
 //            fragmentList.add(new NotificationManageFragment());
 //            fragmentList.add(new InfoManageFragment());
@@ -116,8 +118,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     }
 
 
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
-    {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         // Forward results to EasyPermissions
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
@@ -125,8 +126,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 
     @Override
     public void onPermissionsGranted(int requestCode, List<String> perms) {
-        switch (requestCode)
-        {
+        switch (requestCode) {
             case 777:
                 Toast.makeText(this, "文件读取权限已获取！", Toast.LENGTH_LONG).show();
                 break;
@@ -136,8 +136,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 
     @Override
     public void onPermissionsDenied(int requestCode, List<String> perms) {
-        switch (requestCode)
-        {
+        switch (requestCode) {
             case 777:
                 Toast.makeText(this, "未授权，请在系统设置中手动授予文件读取权限！", Toast.LENGTH_LONG).show();
                 break;

@@ -17,12 +17,12 @@
             android:layout_marginStart="8dp"
             android:layout_marginLeft="4dp"
             android:gravity="center"
-            android:text="@string/app_name"
+            android:text="圈子"
             android:textColor="@color/white"
             android:textSize="19sp" />
 
         <ImageView
-            android:id="@+id/add0"
+            android:id="@+id/add_circle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -43,10 +43,10 @@
             android:descendantFocusability="blocksDescendants">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycleView"
+                android:id="@+id/circle_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp" />
+                android:background="#eeeeee" />
 
         </RelativeLayout>
 

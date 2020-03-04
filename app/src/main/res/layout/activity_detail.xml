@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -11,85 +9,57 @@
 
         <ImageView
             android:id="@+id/detail_img"
-            android:adjustViewBounds="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true" />
 
         <TextView
             android:id="@+id/detail_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/detail_img"
-            android:layout_marginTop="16dp"
-            android:textColor="@color/colorText"
-            android:textStyle="bold"
-            android:textSize="22sp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
             android:layout_centerHorizontal="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <LinearLayout
-            android:id="@+id/fav"
-            android:orientation="horizontal"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="32dp"
-            android:layout_alignTop="@+id/detail_author"
-            android:layout_alignBottom="@+id/detail_author"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:id="@+id/show_fav"
-                android:layout_gravity="center"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <TextView
-                android:id="@+id/show_fav_text"
-                android:textColor="@color/colorPrimary"
-                android:textSize="17sp"
-                android:layout_marginStart="2dp"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-        </LinearLayout>
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:textColor="@color/colorText"
+            android:textSize="22sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/detail_auth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/detail_name"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
             android:text="作者："
             android:textColor="@color/colorText"
-            android:layout_below="@+id/detail_name"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="16dp"
-            android:textSize="19sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:textSize="19sp" />
 
         <TextView
             android:id="@+id/detail_author"
-            android:text="作者："
-            android:layout_toEndOf="@+id/detail_auth"
-            android:textColor="@color/colorText"
-            android:layout_below="@+id/detail_name"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="2dp"
-            android:textSize="19sp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/detail_name"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="16dp"
+            android:layout_toEndOf="@+id/detail_auth"
+            android:text="作者："
+            android:textColor="@color/colorText"
+            android:textSize="19sp" />
 
         <TextView
             android:id="@+id/detail_introduce"
-            android:layout_below="@+id/detail_auth"
-            android:textSize="17sp"
-            android:textColor="@color/colorText"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/detail_auth"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:textColor="@color/colorText"
+            android:textSize="17sp" />
 
     </RelativeLayout>
 
