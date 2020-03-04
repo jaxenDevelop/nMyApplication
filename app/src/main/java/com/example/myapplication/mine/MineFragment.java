@@ -131,8 +131,8 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                 break;
 
             case R.id.line1:
-                Intent intent = new Intent(getActivity(), MessageActivity.class);
-                startActivity(intent);
+                Intent intent1 = new Intent(getActivity(), MessageActivity.class);
+                startActivity(intent1);
                 break;
 
             case R.id.line2:
